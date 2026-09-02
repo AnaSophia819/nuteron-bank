@@ -16,23 +16,39 @@ def menu():
     return resposta
 
 def main():
+    saldo_conta = 0.0
 
-    opcao = menu()
+    while True:
+        opcao = menu()
 
-    if opcao == "1":
-        cliente.cadastrar_cliente()
-    elif opcao == "2":
-        conta.abrir_conta()
-    elif opcao == "3":
-        conta.mostrar_saldo()
-    elif opcao == "4":
-        conta.adicionar_saldo()
-    elif opcao == "5":
-        conta.realizar_saque()
-    elif opcao == "0":
-        print("Saindo... Até logo!")
-    else: 
-        print("Opção inválida")
+        if opcao == "1":
+
+            cliente.cadastrar_cliente()
+
+        elif opcao == "2":
+
+            conta.abrir_conta()
+
+        elif opcao == "3":
+
+            mensagem_saldo = conta.mostrar_saldo(saldo_conta)
+            print(mensagem_saldo)
+
+        elif opcao == "4":
+
+            saldo_conta = conta.adicionar_saldo(saldo_conta)
+            
+        elif opcao == "5":
+
+            saldo_conta = conta.realizar_saque(saldo_conta)
+
+        elif opcao == "0":
+
+            print("Saindo... Até logo!")
+
+        else:
+
+            print("Opção inválida")
 
 if __name__ == "__main__":
     main()

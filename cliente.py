@@ -12,4 +12,4 @@ def cadastrar_cliente(): #Essa função abaixo já retornar os dois parametros c
     nome = input("Digite o nome do cliente: ")
     cpf = input("Digite o CPF do cliente: ")
     print(f"Cliente {nome} com CPF {cpf} cadastrado com sucesso!")
-    return nome, cpf
+    return nome, cpf 
