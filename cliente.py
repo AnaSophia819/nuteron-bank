@@ -13,7 +13,3 @@ def cadastrar_cliente(): #Essa função abaixo já retornar os dois parametros c
     cpf = input("Digite o CPF do cliente: ")
     print(f"Cliente {nome} com CPF {cpf} cadastrado com sucesso!")
     return nome, cpf
-
-def abrir_conta():
-    saldo = 0.0
-    return saldo
