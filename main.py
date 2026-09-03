@@ -27,12 +27,11 @@ def main():
 
         elif opcao == "2":
 
-            conta.abrir_conta()
+            saldo_conta = conta.abrir_conta()
 
         elif opcao == "3":
 
-            mensagem_saldo = conta.mostrar_saldo(saldo_conta)
-            print(mensagem_saldo)
+            conta.mostrar_saldo(saldo_conta)
 
         elif opcao == "4":
 
@@ -45,6 +44,7 @@ def main():
         elif opcao == "0":
 
             print("Saindo... Até logo!")
+            break
 
         else:
 
