@@ -1,15 +1,17 @@
-def adicionar_nome():
-    nome = input("Digite o nome do cliente: ")
-    print(f"Cliente {nome} adicionado com sucesso!")
-    return nome
+from procurar_cliente import cliente_existe
+from json_comandos import salvar_lista
 
-def adicionar_cpf():
-    cpf = input("Digite o CPF do cliente: ")
-    print(f"CPF {cpf} adicionado com sucesso!")
-    return cpf
+def cadastrar(cpfs, nomes):
+    cpf = input("Digite seu CPF:")
 
-def cadastrar_cliente(): #Essa função abaixo já retornar os dois parametros com uma única chamada, as duas funções acima fazem a mesma coisa, mas de forma separada.
-    nome = input("Digite o nome do cliente: ")
-    cpf = input("Digite o CPF do cliente: ")
-    print(f"Cliente {nome} com CPF {cpf} cadastrado com sucesso!")
-    return nome, cpf 
+    if not cliente_existe(cpf, cpfs):
+
+        cpfs.append(cpf)
+        nome = input("Digite seu nome:")
+        nomes.append(nome)
+
+        salvar_lista("cpfs.json", cpfs)
+        salvar_lista("nomes.json", nomes)
+        print("Cliente cadastrado com sucesso!")
+    else:
+        print("Cliente já cadastrado!")

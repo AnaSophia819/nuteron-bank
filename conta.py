@@ -1,37 +1,58 @@
-def abrir_conta():
-    
-    saldo_atual = 0.0
-    print(f"Conta aberta! Saldo inicial: {saldo_atual}")
-    return saldo_atual
+from json_comandos import salvar_lista
+from procurar_cliente import cliente_existe
 
-def adicionar_saldo(saldo_atual):
+def cadastrar_conta(contas, agencias, saldos, donos, cpfs):
+    cpf = input("Digite o CPF do titular:")
 
-  deposito = float(input("Informe o valor do depósito:"))
+    if cliente_existe(cpf, cpfs):
+        numero_conta = input()
+        agencia = input()
+        saldo_inicial = float(input())
 
-  if deposito > 0:
-    saldo_atual += deposito
-    return saldo_atual
-  else: 
-     print("Valor inválido")
+        contas.append(numero_conta)
+        agencias.append(agencia)
+        saldos.append(saldo_inicial)
+        donos.append(cpf)
+        donos.append(numero_conta)
 
-  return saldo_atual
+        salvar_lista("contas.json",contas)
+        salvar_lista("agencias.json",agencias)
+        salvar_lista("saldos.json",saldos)
+        salvar_lista("donos.json",donos)
 
-def mostrar_saldo(saldo_atual):
-
-  print (f"o saldo é de {saldo_atual}")
-
-def realizar_saque(saldo_atual):
-
-  saque = float(input("Informe o valor do saque:"))
-
-  if saque > 0:
-    if saque >= saldo_atual:
-      print("Saldo insuficiente")
     else:
-      saldo_atual -= saque
-      print(f"Saque realizado no valor de {saque}")
-      return saldo_atual
-  else:
-    print("Valor inválido")
+        print("Cliente não existe.")
 
-  return saldo_atual
+def buscar_indice_conta(conta_procurada, contas):
+    for i in range(len(contas)):
+        if contas[i] == conta_procurada:
+            return i
+
+def depositar(contas, saldos):
+    conta_procurada =  input("Digite o numero da conta:")
+    indice = buscar_indice_conta(conta_procurada, contas)
+
+    if indice != None:
+        valor = float(input("Digite o valor do depósito:"))
+        saldos[indice] = saldos[indice] + valor
+        salvar_lista("saldos.json",saldos)
+
+    else:
+
+        print("Conta não encontrada.")
+
+def sacar(contas, saldos):
+    conta_procurada = input("Digite o numero da conta:")
+    indice = buscar_indice_conta(conta_procurada, contas)
+
+    if indice != None:
+        valor = float(input("Digite o valor do saque:"))
+        if saldos[indice] >= valor:
+            saldos[indice] = saldos[indice] - valor
+            salvar_lista("saldos.json", saldos)
+        else:
+            print("Saldo insuficiente")
+
+    else:
+
+        print("Conta não encontrada.")
