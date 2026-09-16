@@ -27,6 +27,7 @@ def buscar_indice_conta(conta_procurada, contas):
     for i in range(len(contas)):
         if contas[i] == conta_procurada:
             return i
+    return None
 
 def depositar(contas, saldos):
     conta_procurada =  input("Digite o numero da conta:")
@@ -56,3 +57,16 @@ def sacar(contas, saldos):
     else:
 
         print("Conta não encontrada.")
+
+def adicionar_titular_extra(donos, cpfs, contas):
+    cpf = input("Digite seu cpf:")
+    if cliente_existe(cpf,cpfs) is not None:
+        conta = input("Numero da conta que deseja se juntar:")
+        if buscar_indice_conta(conta, contas) is not None:
+            donos.append(cpf)
+            donos.append(conta)
+            salvar_lista("donos.json",donos)
+        else:
+            print("Conta não encontrada.")
+    else:
+        print("Cliente não cadastrado")
