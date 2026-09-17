@@ -5,9 +5,9 @@ def cadastrar_conta(contas, agencias, saldos, donos, cpfs):
     cpf = input("Digite o CPF do titular:")
 
     if cliente_existe(cpf, cpfs):
-        numero_conta = input()
-        agencia = input()
-        saldo_inicial = float(input())
+        numero_conta = input("Digite o número da conta: ")
+        agencia = input("Digite a agência: ")
+        saldo_inicial = float(input("Digite o saldo inicial: "))
 
         contas.append(numero_conta)
         agencias.append(agencia)
