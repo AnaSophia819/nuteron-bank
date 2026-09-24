@@ -109,3 +109,35 @@ def relatorio_geral(contas, agencias, saldos, cpfs):
     print(f"Quantidade de clientes: {quantidade_clientes}")
     print(f"Saldo total do banco: R$ {saldo_total:.2f}")
     print(f"Quantidade de agências: {quantidade_agencias}")
+
+
+# Lista todos os clientes do banco
+def listar_clientes(cpfs, nomes):
+    print("\n========== LISTA DE CLIENTES ==========")
+    for i in range(len(cpfs)):
+        print(f"Nome: {nomes[i]} | CPF: {cpfs[i]}")
+
+
+# Saldo por agência, entrega o total de saldo de cada agência
+def saldo_por_agencia(agencias, saldos):
+    agencias_unicas = []
+    saldo_total_por_agencia = []
+
+    for indice, agencia in enumerate(agencias):
+        if agencia in agencias_unicas:
+            pos = agencias_unicas.index(agencia)
+            saldo_total_por_agencia[pos] += saldos[indice]
+        else:
+            agencias_unicas.append(agencia)
+            saldo_total_por_agencia.append(saldos[indice])
+
+    print("\n========== SALDO POR AGÊNCIA ==========")
+    for n in range(len(agencias_unicas)):
+        print(f"Agência: {agencias_unicas[n]} | Saldo total: R$ {saldo_total_por_agencia[n]:.2f}")
+
+
+# Lista todas as contas do banco, com agência e saldo. Isso cobre, ao mesmo tempo, as funções de listar agências e contas Obs: não mostra os titulares das contas
+def listar_contas(contas, agencias, saldos):
+    print("\n========== LISTA DE CONTAS ==========")
+    for i in range(len(contas)):
+        print(f"Conta: {contas[i]} | Agência: {agencias[i]} | Saldo: R$ {saldos[i]:.2f}")
