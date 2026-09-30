@@ -3,7 +3,7 @@ import json
 # Comando geral em json para salvar as listas que serão feitas durante o código
 def salvar_lista(nome_arquivo, lista):
     with open(nome_arquivo, "w") as arquivo:
-        json.dump(lista, arquivo)
+        json.dump(lista, arquivo, indent=4, ensure_ascii=False)
 
 # Comando geral em json para carregar as listas durante o código
 def carregar_lista(nome_arquivo):
