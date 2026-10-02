@@ -34,34 +34,34 @@ def mostrar_menu_relatorios():
 """)
     return input("Escolha uma opção: ").strip()
 
-''' REFATORAR MENU APÓS REFATORAR ARQUIVO DE RELATÓRIOS
+
 def menu_retalorios():
     opcao = ""
     while opcao != "0":
         opcao = mostrar_menu_relatorios()
 
         if opcao == "1":
-            relatorio.relatorio_contas_por_cpf(cpfs, donos)
+            relatorio.relatorio_contas_por_cpf(contas)
         elif opcao == "2":
-            relatorio.relatorio_contas_por_agencia(contas, agencias)
+            relatorio.relatorio_contas_por_agencia(contas)
         elif opcao == "3":
-            relatorio.relatorio_contas_multiplos_donos(contas, donos)
+            relatorio.relatorio_contas_multiplos_donos(contas)
         elif opcao == "4":
-            relatorio.relatorio_saldo_por_cliente(cpfs, donos, contas, saldos)
+            relatorio.relatorio_saldo_por_cliente(contas)
         elif opcao == "5":
-            relatorio.saldo_por_agencia(agencias, saldos)
+            relatorio.saldo_por_agencia(contas)
         elif opcao == "6":
-            relatorio.listar_clientes(cpfs, nomes)
+            relatorio.listar_clientes(contas)
         elif opcao == "7":
-            relatorio.listar_contas(contas, agencias, saldos)
+            relatorio.listar_contas(contas)
         elif opcao == "8":
-            relatorio.relatorio_geral(contas, agencias, saldos, cpfs)
+            relatorio.relatorio_geral(contas)
         elif opcao == "0":
             print("Voltando ao menu principal...")
         else:
             print("Opção inválida. Tente novamente.")
     main()
-'''
+
 def carregar_dados():
     global contas
     contas = carregar_lista("contas.json")
@@ -83,8 +83,8 @@ def main():
             conta.sacar(contas)
         elif opcao == "5":
             conta.adicionar_titular_extra(contas)
-        #elif opcao == "6":
-            #menu_retalorios()
+        elif opcao == "6":
+            menu_retalorios()
         elif opcao == "0":
             print("Desligando...")
         else:
