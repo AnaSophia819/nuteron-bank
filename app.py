@@ -59,9 +59,8 @@ def depositar():
         
         # Se o índice (numero da conta) existir, o depoósito pode ser realizado
         if indice != None:
+            valor = request.form.get('valor', "")
             if  contas[indice].get("Tipo") != "Salario":
-                valor = request.form.get('valor', "")
-
                 valor_float = float(valor)
                 
                 contas[indice]["Saldo"] = contas[indice].get("Saldo") + valor_float
@@ -89,8 +88,8 @@ def sacar():
         
         # Se o índice (numero da conta) existir, o saque pode ser realizado
         if indice != None:
+            valor = request.form.get("valor", "")
             if contas[indice].get("Tipo") != "poupanca": 
-                valor = request.form.get("valor", "")
                 valor_float = float(valor)
 
                 # Saque só acontece se o saldo for suficiente
@@ -132,9 +131,36 @@ def relatorios():
         conta["agencia"] for conta in linhas if conta["agencia"]
     })
 
+    contas_com_titulares = []
+
+    for conta in contas:
+        titulares = conta.get("Titulares extras", [])
+        if not titulares:
+            continue
+
+        cpfs = []
+        cpf_principal = conta.get("CPF", conta.get("Cpf", ""))
+        if cpf_principal:
+            cpfs.append(str(cpf_principal))
+
+        cpfs.extend(
+            str(titular.get("Cpf", titular.get("cpf", "")))
+            for titular in titulares
+            if titular.get("Cpf", titular.get("cpf", ""))
+        )
+
+        contas_com_titulares.append({
+            "numero": conta.get("Numero da conta", conta.get("Conta", "")),
+            "agencia": conta.get("Agencia", ""),
+            "saldo": float(conta.get("Saldo", 0) or 0),
+            "quantidade_titulares": 1 + len(titulares),
+            "cpfs": ", ".join(cpfs),
+        })
+
     return render_template(
         "relatorios.html",
         contas=linhas,
+        contas_com_titulares=contas_com_titulares,
         total_saldo=total_saldo,
         quantidade_contas=len(linhas),
         quantidade_clientes=quantidade_clientes,
@@ -143,6 +169,22 @@ def relatorios():
         menor_saldo=min(conta["saldo"] for conta in linhas if conta["saldo"]),
         saldo_medio=total_saldo/len(linhas)
     )
+
+@app.route('/titular_extra', methods=['GET', 'POST'])
+def titular_extra():
+    if request.method == 'POST':
+        contas = carregar_lista("contas.json")
+        conta_procurada = request.form.get("conta_procurada", "")
+        indice = buscar_indice_conta(conta_procurada, contas)
+        nome_extra = request.form.get("titular_extra", "")
+        cpf_extra = request.form.get("cpf_extra", "")
+
+        contas[indice].setdefault("Titulares extras", [])
+        contas[indice]["Titulares extras"].append({"Nome": nome_extra, "Cpf": cpf_extra})
+        salvar_lista("contas.json", contas)
+        return redirect(url_for("index"))
+
+    return render_template("titular_extra.html")
 
 # Executando servidor
 if __name__ == "__main__":

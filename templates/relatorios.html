@@ -39,4 +39,33 @@
     <p>Nenhuma conta cadastrada.</p>
     {% endif %}
 
+    <h2>Contas com titulares extras</h2>
+
+    {% if contas_com_titulares %}
+    <table>
+        <thead>
+            <tr>
+                <th>Conta</th>
+                <th>Agência</th>
+                <th>Saldo</th>
+                <th>Quantidade de titulares</th>
+                <th>CPFs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for conta in contas_com_titulares %}
+            <tr>
+                <td>{{ conta.numero }}</td>
+                <td>{{ conta.agencia }}</td>
+                <td>R$ {{ "%.2f"|format(conta.saldo) }}</td>
+                <td>{{ conta.quantidade_titulares }}</td>
+                <td>{{ conta.cpfs }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhuma conta possui titulares extras.</p>
+    {% endif %}
+
     <p><a href="{{ url_for('index') }}">Voltar ao menu</a></p>

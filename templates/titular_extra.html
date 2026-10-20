@@ -1,0 +1,11 @@
+<h1>Casdastra novo titular</h1>
+
+
+<form action="{{ url_for('titular_extra') }}" method="post">
+    <label>Conta <input name="conta_procurada" required></label>
+    <label>Nome <input name="titular_extra" required></label>
+    <label>Cpf <input name="cpf_extra" required></label>
+    <button type="submit">Cadastrar</button>
+</form>
+
+<a href="{{ url_for('index') }}">Voltar ao menu</a>
