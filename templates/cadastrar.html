@@ -1,0 +1,17 @@
+<h1>Cadastrar conta</h1>
+
+{% if mensagem %}
+    <p role="alert">{{ mensagem }}</p>
+{% endif %}
+
+<form action="{{ url_for('cadastrar') }}" method="post">
+    <label>Nome <input name="nome" required></label>
+    <label>CPF <input name="cpf" required></label>
+    <label>Saldo <input name="saldo" required></label>
+    <label>Conta <input name="conta" required></label>
+    <label>Agencia <input name="agencia" required></label>
+    <label>Tipo <input name="tipo" required></label>
+    <button type="submit">Cadastrar</button>
+</form>
+
+<a href="{{ url_for('index') }}">Voltar ao menu</a>

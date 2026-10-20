@@ -1,0 +1,42 @@
+<h1>Relatório geral</h1>
+
+    <p>Quantidade de contas: {{ quantidade_contas }}</p>
+    <p>Quantidade de clientes: {{ quantidade_clientes }}</p>
+    <p>Quantidade de agências: {{ quantidade_agencias }}</p>
+    <p>Maior Saldo: {{ maior_saldo }}</p>
+    <p>Menor Saldo: {{ menor_saldo }}</p>
+    <p>Média de saldo: {{ saldo_medio }}</p>
+    <p>Saldo total: R$ {{ "%.2f"|format(total_saldo) }}</p>
+
+    <h2>Contas</h2>
+
+    {% if contas %}
+    <table>
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Agência</th>
+                <th>Tipo</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for conta in contas %}
+            <tr>
+                <td>{{ conta.numero }}</td>
+                <td>{{ conta.nome }}</td>
+                <td>{{ conta.cpf }}</td>
+                <td>{{ conta.agencia }}</td>
+                <td>{{ conta.tipo }}</td>
+                <td>R$ {{ "%.2f"|format(conta.saldo) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhuma conta cadastrada.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Voltar ao menu</a></p>

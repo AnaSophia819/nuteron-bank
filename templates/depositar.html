@@ -1,0 +1,13 @@
+<h1>Realizar Deposito</h1>
+
+{% if mensagem %}
+    <p role="alert">{{ mensagem }}</p>
+{% endif %}
+
+<form action="{{ url_for('depositar') }}" method="post">
+    <label>Conta <input name="conta_procurada" required></label>
+    <label>Valor <input name="valor" required></label>
+    <button type="submit">Depositar</button>
+</form>
+
+<a href="{{ url_for('index') }}">Voltar ao menu</a>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nuteron Bank</title>
+</head>
+<body>
+    <h1>Nuteron Bank</h1>
+    
+    {% if mensagem %}
+    <p role="alert">{{ mensagem }}</p>
+{% endif %}
+
+<nav>
+    <ul>
+        <li><a href="{{ url_for('cadastrar') }}">Cadastrar conta</a></li>
+        <li><a href="{{ url_for('depositar') }}">Depositar</a></li>
+        <li><a href="{{ url_for('sacar') }}">Sacar</a></li>
+        <li><a href="{{ url_for('relatorios') }}">Relatórios</a></li>
+    </ul>
+</nav>
+</body>
+</html>
