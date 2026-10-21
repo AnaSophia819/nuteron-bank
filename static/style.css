@@ -1,0 +1,228 @@
+/* Estilos do fundo e centralização */
+body {
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Cartão centralizado */
+.container {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    width: 100%;
+    max-width: 380px;
+}
+
+h1 {
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+/* Limpeza da lista */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin-bottom: 12px;
+}
+
+/* Transformando links em botões */
+a {
+    display: block;
+    padding: 12px 20px;
+    background-color: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+/* Efeito ao passar o mouse */
+a:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+/* Formulários */
+.form-group {
+    text-align: left;
+    margin-bottom: 1.1rem;
+}
+
+label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.3rem;
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Botão principal do formulário */
+button, .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+}
+
+button:hover, .btn-primary:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* Botão secundário / Voltar */
+.btn-secondary {
+    display: block;
+    margin-top: 0.8rem;
+    background-color: transparent;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-secondary:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+/* Mensagem de alerta e erros */
+.alert {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+}
+
+/* Container estendido para telas com tabelas */
+.container-wide {
+    max-width: 800px;
+}
+
+h2 {
+    color: #334155;
+    font-size: 1.15rem;
+    margin-top: 1.8rem;
+    margin-bottom: 0.8rem;
+    text-align: left;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 0.4rem;
+}
+
+/* Cards de estatísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.2rem;
+}
+
+.stat-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-card span {
+    display: block;
+    font-size: 0.72rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.stat-card strong {
+    font-size: 1rem;
+    color: #0f172a;
+}
+
+.stat-card-full {
+    grid-column: 1 / -1;
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.stat-card .highlight {
+    color: #2563eb;
+    font-size: 1.2rem;
+}
+
+/* Tabelas responsivas */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.88rem;
+}
+
+th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.empty-state {
+    color: #64748b;
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 0.8rem 0;
+}

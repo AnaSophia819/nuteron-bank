@@ -179,10 +179,13 @@ def titular_extra():
         nome_extra = request.form.get("titular_extra", "")
         cpf_extra = request.form.get("cpf_extra", "")
 
-        contas[indice].setdefault("Titulares extras", [])
-        contas[indice]["Titulares extras"].append({"Nome": nome_extra, "Cpf": cpf_extra})
-        salvar_lista("contas.json", contas)
-        return redirect(url_for("index"))
+        if indice != None:
+            contas[indice].setdefault("Titulares extras", [])
+            contas[indice]["Titulares extras"].append({"Nome": nome_extra, "Cpf": cpf_extra})
+            salvar_lista("contas.json", contas)
+            return redirect(url_for("index"))
+        else:
+            return render_template("index.html", mensagem="Conta não encontrada"), 400
 
     return render_template("titular_extra.html")
 

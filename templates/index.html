@@ -4,22 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Nuteron Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Nuteron Bank</h1>
-    
-    {% if mensagem %}
-    <p role="alert">{{ mensagem }}</p>
-{% endif %}
 
-<nav>
-    <ul>
-        <li><a href="{{ url_for('cadastrar') }}">Cadastrar conta</a></li>
-        <li><a href="{{ url_for('depositar') }}">Depositar</a></li>
-        <li><a href="{{ url_for('sacar') }}">Sacar</a></li>
-        <li><a href="{{ url_for('relatorios') }}">Relatórios</a></li>
-        <li><a href="{{ url_for('titular_extra') }}">Novo titular</a></li>
-    </ul>
-</nav>
+    <div class="container">
+        <h1>Nuteron Bank 🏦</h1>
+
+        <ul>
+            <li><a href="{{ url_for('cadastrar') }}">Cadastrar conta</a></li>
+            <li><a href="{{ url_for('depositar') }}">Depositar</a></li>
+            <li><a href="{{ url_for('sacar') }}">Sacar</a></li>
+            <li><a href="{{ url_for('relatorios') }}">Relatórios</a></li>
+            <li><a href="{{ url_for('titular_extra') }}">Novo titular</a></li>
+        </ul>
+    </div>
+
 </body>
 </html>

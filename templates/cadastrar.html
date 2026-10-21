@@ -1,17 +1,56 @@
-<h1>Cadastrar conta</h1>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastrar Conta - Nuteron Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-{% if mensagem %}
-    <p role="alert">{{ mensagem }}</p>
-{% endif %}
+    <div class="container">
+        <h1>Cadastrar conta 📝</h1>
 
-<form action="{{ url_for('cadastrar') }}" method="post">
-    <label>Nome <input name="nome" required></label>
-    <label>CPF <input name="cpf" required></label>
-    <label>Saldo <input name="saldo" required></label>
-    <label>Conta <input name="conta" required></label>
-    <label>Agencia <input name="agencia" required></label>
-    <label>Tipo <input name="tipo" required></label>
-    <button type="submit">Cadastrar</button>
-</form>
+        {% if mensagem %}
+            <p role="alert" class="alert">{{ mensagem }}</p>
+        {% endif %}
 
-<a href="{{ url_for('index') }}">Voltar ao menu</a>
+        <form action="{{ url_for('cadastrar') }}" method="post">
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome" placeholder="ex: Maria Silva" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cpf">CPF</label>
+                <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+            </div>
+
+            <div class="form-group">
+                <label for="saldo">Saldo Inicial (R$)</label>
+                <input type="number" step="0.01" id="saldo" name="saldo" placeholder="0.00" required>
+            </div>
+
+            <div class="form-group">
+                <label for="conta">Número da Conta</label>
+                <input type="text" id="conta" name="conta" placeholder="ex: 12345-6" required>
+            </div>
+
+            <div class="form-group">
+                <label for="agencia">Agência</label>
+                <input type="text" id="agencia" name="agencia" placeholder="ex: 0001" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo">Tipo de Conta</label>
+                <input type="text" id="tipo" name="tipo" placeholder="ex: Corrente, Poupanca, Salario" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Cadastrar</button>
+        </form>
+
+        <a href="{{ url_for('index') }}" class="btn-secondary">Voltar ao menu</a>
+    </div>
+
+</body>
+</html>

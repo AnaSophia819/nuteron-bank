@@ -1,71 +1,112 @@
-<h1>Relatório geral</h1>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Relatório Geral - Nuteron Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-    <p>Quantidade de contas: {{ quantidade_contas }}</p>
-    <p>Quantidade de clientes: {{ quantidade_clientes }}</p>
-    <p>Quantidade de agências: {{ quantidade_agencias }}</p>
-    <p>Maior Saldo: {{ maior_saldo }}</p>
-    <p>Menor Saldo: {{ menor_saldo }}</p>
-    <p>Média de saldo: {{ saldo_medio }}</p>
-    <p>Saldo total: R$ {{ "%.2f"|format(total_saldo) }}</p>
+    <div class="container container-wide">
+        <h1>Relatório Geral 📊</h1>
 
-    <h2>Contas</h2>
+        <!-- Painel de Indicadores -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>Contas</span>
+                <strong>{{ quantidade_contas }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>Clientes</span>
+                <strong>{{ quantidade_clientes }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>Agências</span>
+                <strong>{{ quantidade_agencias }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>Maior Saldo</span>
+                <strong>R$ {{ "%.2f"|format(maior_saldo) if maior_saldo is number else maior_saldo }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>Menor Saldo</span>
+                <strong>R$ {{ "%.2f"|format(menor_saldo) if menor_saldo is number else menor_saldo }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>Média de Saldo</span>
+                <strong>R$ {{ "%.2f"|format(saldo_medio) if saldo_medio is number else saldo_medio }}</strong>
+            </div>
+            <div class="stat-card stat-card-full">
+                <span>Saldo Total em Custódia</span>
+                <strong class="highlight">R$ {{ "%.2f"|format(total_saldo) }}</strong>
+            </div>
+        </div>
 
-    {% if contas %}
-    <table>
-        <thead>
-            <tr>
-                <th>Número</th>
-                <th>Nome</th>
-                <th>CPF</th>
-                <th>Agência</th>
-                <th>Tipo</th>
-                <th>Saldo</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for conta in contas %}
-            <tr>
-                <td>{{ conta.numero }}</td>
-                <td>{{ conta.nome }}</td>
-                <td>{{ conta.cpf }}</td>
-                <td>{{ conta.agencia }}</td>
-                <td>{{ conta.tipo }}</td>
-                <td>R$ {{ "%.2f"|format(conta.saldo) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>Nenhuma conta cadastrada.</p>
-    {% endif %}
+        <h2>Contas Cadastradas</h2>
+        {% if contas %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Agência</th>
+                        <th>Tipo</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conta in contas %}
+                    <tr>
+                        <td>{{ conta.numero }}</td>
+                        <td>{{ conta.nome }}</td>
+                        <td>{{ conta.cpf }}</td>
+                        <td>{{ conta.agencia }}</td>
+                        <td>{{ conta.tipo }}</td>
+                        <td>R$ {{ "%.2f"|format(conta.saldo) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="empty-state">Nenhuma conta cadastrada.</p>
+        {% endif %}
 
-    <h2>Contas com titulares extras</h2>
+        <h2>Contas com Titulares Extras</h2>
+        {% if contas_com_titulares %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Conta</th>
+                        <th>Agência</th>
+                        <th>Saldo</th>
+                        <th>Qtd. Titulares</th>
+                        <th>CPFs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conta in contas_com_titulares %}
+                    <tr>
+                        <td>{{ conta.numero }}</td>
+                        <td>{{ conta.agencia }}</td>
+                        <td>R$ {{ "%.2f"|format(conta.saldo) }}</td>
+                        <td>{{ conta.quantidade_titulares }}</td>
+                        <td>{{ conta.cpfs }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="empty-state">Nenhuma conta possui titulares extras.</p>
+        {% endif %}
 
-    {% if contas_com_titulares %}
-    <table>
-        <thead>
-            <tr>
-                <th>Conta</th>
-                <th>Agência</th>
-                <th>Saldo</th>
-                <th>Quantidade de titulares</th>
-                <th>CPFs</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for conta in contas_com_titulares %}
-            <tr>
-                <td>{{ conta.numero }}</td>
-                <td>{{ conta.agencia }}</td>
-                <td>R$ {{ "%.2f"|format(conta.saldo) }}</td>
-                <td>{{ conta.quantidade_titulares }}</td>
-                <td>{{ conta.cpfs }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>Nenhuma conta possui titulares extras.</p>
-    {% endif %}
+        <a href="{{ url_for('index') }}" class="btn-secondary" style="margin-top: 1.5rem;">Voltar ao menu</a>
+    </div>
 
-    <p><a href="{{ url_for('index') }}">Voltar ao menu</a></p>
+</body>
+</html>
