@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, url_for, redirect
 from json_comandos import carregar_lista, salvar_lista
-from conta import buscar_indice_conta
+from conta import Conta, buscar_conta
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ def cadastrar():
     if request.method == 'POST':
         nome = request.form.get('nome', "")
         cpf = request.form.get('cpf', "")
-        conta = request.form.get('conta', "")
+        numero_conta = request.form.get('conta', "")
         agencia = request.form.get('agencia', "")
         tipo = request.form.get('tipo', "")
         saldo = request.form.get('saldo', "")
@@ -24,171 +24,164 @@ def cadastrar():
         except ValueError:
             saldo_float = 0.0
 
-        # Cria o dicionário do novo cliente
-        novo_cliente = {
-            'Nome': nome,
-            'Cpf': cpf,
-            'Saldo': saldo_float,
-            'Conta': conta,
-            'Agencia': agencia,
-            'Tipo': tipo
-        }
+        dados_json = carregar_lista("contas.json")
+        contas_obj = [Conta.from_dict(d) for d in dados_json]
 
-        clientes = carregar_lista("contas.json")
         # Verifica se a conta já existe nesta agência
-        for cliente in clientes:
-            if cliente.get("Conta") == conta and cliente.get("Agencia") == agencia:
-                return render_template("cadastrar.html", mensagem="Já existe uma conta com esse número nesta agência.",nome=nome, cpf=cpf, conta=conta, agencia=agencia, tipo=tipo, saldo=saldo,), 400
-            
-        clientes.append(novo_cliente)
-        salvar_lista("contas.json", clientes)
-
+        for c in contas_obj:
+            if c.numero == numero_conta and c.agencia == agencia:
+                return render_template("cadastrar.html", mensagem="Já existe uma conta com esse número nesta agência.", nome=nome, cpf=cpf, conta=numero_conta, agencia=agencia, tipo=tipo, saldo=saldo), 400
+        
+        nova_conta = Conta(numero=numero_conta, agencia=agencia, saldo=saldo_float, cpf=cpf, nome=nome, tipo=tipo)
+        contas_obj.append(nova_conta)
+        
+        salvar_lista("contas.json", [c.to_dict() for c in contas_obj])
         return redirect(url_for("index"))
 
     return render_template("cadastrar.html")
 
+
 @app.route('/depositar', methods=['GET', 'POST'])
 def depositar():
     if request.method == 'POST':
-        contas = carregar_lista("contas.json")
+        dados_json = carregar_lista("contas.json")
+        contas_obj = [Conta.from_dict(d) for d in dados_json]
 
-        conta_procurada =  request.form.get('conta_procurada', "")
+        conta_procurada = request.form.get('conta_procurada', "")
+        valor = request.form.get('valor', "")
 
-        # Faz de acordo com o índice da função anterior 
-        indice = buscar_indice_conta(conta_procurada, contas)
+        conta_alvo = buscar_conta(conta_procurada, contas_obj)
         
-        # Se o índice (numero da conta) existir, o depoósito pode ser realizado
-        if indice != None:
-            valor = request.form.get('valor', "")
-            if  contas[indice].get("Tipo") != "Salario":
-                valor_float = float(valor)
-                
-                contas[indice]["Saldo"] = contas[indice].get("Saldo") + valor_float
-                # Salva o novo saldo na lista "contas"
-                salvar_lista("contas.json", contas)
-
+        if conta_alvo:
+            sucesso, msg = conta_alvo.depositar(valor)
+            if sucesso:
+                salvar_lista("contas.json", [c.to_dict() for c in contas_obj])
                 return redirect(url_for("index"))
-            
-            else: 
-                return render_template("depositar.html", mensagem="Está conta não permte deposito", conta_procurada=conta_procurada, valor=valor,), 400
-        
+            else:
+                return render_template("depositar.html", mensagem=msg, conta_procurada=conta_procurada, valor=valor), 400
         else:
-            return render_template("index.html", mensagem="Conta não encontrada",), 400
+            return render_template("index.html", mensagem="Conta não encontrada"), 400
 
     return render_template("depositar.html")
+
 
 @app.route('/sacar', methods=['GET', 'POST'])
 def sacar():
     if request.method == 'POST':
-        contas = carregar_lista("contas.json")
+        dados_json = carregar_lista("contas.json")
+        contas_obj = [Conta.from_dict(d) for d in dados_json]
 
         conta_procurada = request.form.get("conta_procurada", "")
-        # Faz de acordo com o índice da função anterior
-        indice = buscar_indice_conta(conta_procurada, contas)
+        valor = request.form.get("valor", "")
         
-        # Se o índice (numero da conta) existir, o saque pode ser realizado
-        if indice != None:
-            valor = request.form.get("valor", "")
-            if contas[indice].get("Tipo") != "poupanca": 
-                valor_float = float(valor)
-
-                # Saque só acontece se o saldo for suficiente
-                if contas[indice].get("Saldo") >= valor_float:
-                    contas[indice]["Saldo"] = contas[indice].get("Saldo") - valor_float
-                    
-                    # Salva o novo saldo na lista "saldos"
-                    salvar_lista("contas.json",contas)
-                    return redirect(url_for("index"))
-                else:
-                    return render_template("sacar.html", mensagem="Saldo insuficiente. Informe um valor menor.", conta_procurada=conta_procurada, valor=valor,), 400
+        conta_alvo = buscar_conta(conta_procurada, contas_obj)
+        
+        if conta_alvo:
+            sucesso, msg = conta_alvo.sacar(valor)
+            if sucesso:
+                salvar_lista("contas.json", [c.to_dict() for c in contas_obj])
+                return redirect(url_for("index"))
             else:
-                return render_template("sacar.html", mensagem="Está conta não permite saque", conta_procurada=conta_procurada, valor=valor,), 400
+                return render_template("sacar.html", mensagem=msg, conta_procurada=conta_procurada, valor=valor), 400
         else:
-                return render_template("index.html", mensagem="Conta não encontrada",), 400
-        
+            return render_template("index.html", mensagem="Conta não encontrada"), 400
+            
     return render_template("sacar.html")
 
-@app.route("/relatorios")
-def relatorios():
-    contas = carregar_lista("contas.json")
 
-    linhas = []
-    for conta in contas:
-        linhas.append({
-            "numero": conta.get("Numero da conta", conta.get("Conta", "")),
-            "nome": conta.get("Nome", ""),
-            "cpf": conta.get("CPF", conta.get("Cpf", "")),
-            "agencia": conta.get("Agencia", ""),
-            "tipo": conta.get("Tipo", ""),
-            "saldo": float(conta.get("Saldo", 0) or 0),
-        })
+@app.route('/saldo', methods=['GET', 'POST'])
+def consultar_saldo():
+    if request.method == 'POST':
+        dados_json = carregar_lista("contas.json")
+        contas_obj = [Conta.from_dict(d) for d in dados_json]
+        
+        conta_procurada = request.form.get("conta_procurada", "")
+        conta_alvo = buscar_conta(conta_procurada, contas_obj)
+        
+        if conta_alvo:
+            return render_template("saldo.html", saldo=conta_alvo.saldo, conta_procurada=conta_procurada)
+        else:
+            return render_template("saldo.html", mensagem="Conta não encontrada.")
+            
+    return render_template("saldo.html")
 
-    total_saldo = sum(conta["saldo"] for conta in linhas)
-    quantidade_clientes = len({
-        conta["cpf"] for conta in linhas if conta["cpf"]
-    })
-    quantidade_agencias = len({
-        conta["agencia"] for conta in linhas if conta["agencia"]
-    })
-
-    contas_com_titulares = []
-
-    for conta in contas:
-        titulares = conta.get("Titulares extras", [])
-        if not titulares:
-            continue
-
-        cpfs = []
-        cpf_principal = conta.get("CPF", conta.get("Cpf", ""))
-        if cpf_principal:
-            cpfs.append(str(cpf_principal))
-
-        cpfs.extend(
-            str(titular.get("Cpf", titular.get("cpf", "")))
-            for titular in titulares
-            if titular.get("Cpf", titular.get("cpf", ""))
-        )
-
-        contas_com_titulares.append({
-            "numero": conta.get("Numero da conta", conta.get("Conta", "")),
-            "agencia": conta.get("Agencia", ""),
-            "saldo": float(conta.get("Saldo", 0) or 0),
-            "quantidade_titulares": 1 + len(titulares),
-            "cpfs": ", ".join(cpfs),
-        })
-
-    return render_template(
-        "relatorios.html",
-        contas=linhas,
-        contas_com_titulares=contas_com_titulares,
-        total_saldo=total_saldo,
-        quantidade_contas=len(linhas),
-        quantidade_clientes=quantidade_clientes,
-        quantidade_agencias=quantidade_agencias,
-        maior_saldo=max(conta["saldo"] for conta in linhas if conta["saldo"]),
-        menor_saldo=min(conta["saldo"] for conta in linhas if conta["saldo"]),
-        saldo_medio=total_saldo/len(linhas)
-    )
 
 @app.route('/titular_extra', methods=['GET', 'POST'])
 def titular_extra():
     if request.method == 'POST':
-        contas = carregar_lista("contas.json")
+        dados_json = carregar_lista("contas.json")
+        contas_obj = [Conta.from_dict(d) for d in dados_json]
+        
         conta_procurada = request.form.get("conta_procurada", "")
-        indice = buscar_indice_conta(conta_procurada, contas)
         nome_extra = request.form.get("titular_extra", "")
         cpf_extra = request.form.get("cpf_extra", "")
 
-        if indice != None:
-            contas[indice].setdefault("Titulares extras", [])
-            contas[indice]["Titulares extras"].append({"Nome": nome_extra, "Cpf": cpf_extra})
-            salvar_lista("contas.json", contas)
+        conta_alvo = buscar_conta(conta_procurada, contas_obj)
+
+        if conta_alvo:
+            conta_alvo.adicionar_titular(nome_extra, cpf_extra)
+            salvar_lista("contas.json", [c.to_dict() for c in contas_obj])
             return redirect(url_for("index"))
         else:
             return render_template("index.html", mensagem="Conta não encontrada"), 400
 
     return render_template("titular_extra.html")
 
-# Executando servidor
+
+@app.route("/relatorios")
+def relatorios():
+    dados_json = carregar_lista("contas.json")
+    contas_obj = [Conta.from_dict(d) for d in dados_json]
+
+    if not contas_obj:
+        return render_template(
+            "relatorios.html",
+            contas=[],
+            contas_com_titulares=[],
+            total_saldo=0.0,
+            quantidade_contas=0,
+            quantidade_clientes=0,
+            quantidade_agencias=0,
+            maior_saldo=0.0,
+            menor_saldo=0.0,
+            saldo_medio=0.0
+        )
+
+    total_saldo = sum(c.saldo for c in contas_obj)
+    quantidade_clientes = len({c.cpf for c in contas_obj if c.cpf})
+    quantidade_agencias = len({c.agencia for c in contas_obj if c.agencia})
+    maior_saldo = max(c.saldo for c in contas_obj)
+    menor_saldo = min(c.saldo for c in contas_obj)
+    saldo_medio = total_saldo / len(contas_obj)
+
+    contas_com_titulares = []
+    for c in contas_obj:
+        if not c.titulares_extras:
+            continue
+            
+        cpfs = [str(c.cpf)] if c.cpf else []
+        cpfs.extend(str(t.get("Cpf", t.get("cpf", ""))) for t in c.titulares_extras if t.get("Cpf", t.get("cpf", "")))
+        
+        contas_com_titulares.append({
+            "numero": c.numero,
+            "agencia": c.agencia,
+            "saldo": c.saldo,
+            "quantidade_titulares": 1 + len(c.titulares_extras),
+            "cpfs": ", ".join(cpfs),
+        })
+
+    return render_template(
+        "relatorios.html",
+        contas=contas_obj,
+        contas_com_titulares=contas_com_titulares,
+        total_saldo=total_saldo,
+        quantidade_contas=len(contas_obj),
+        quantidade_clientes=quantidade_clientes,
+        quantidade_agencias=quantidade_agencias,
+        maior_saldo=maior_saldo,
+        menor_saldo=menor_saldo,
+        saldo_medio=saldo_medio
+    )
+
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)
