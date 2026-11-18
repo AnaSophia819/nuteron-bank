@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Consultar saldo - Nuteron Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Consultar saldo</h1>
+
+        {% if mensagem %}
+            <p role="alert" class="alert">{{ mensagem }}</p>
+        {% endif %}
+
+        <form action="{{ url_for('consultar_saldo') }}" method="post">
+            <div class="form-group">
+                <label for="conta_procurada">Número da Conta</label>
+                <input type="text" id="conta_procurada" name="conta_procurada"
+                       value="{{ conta_procurada or '' }}" required>
+            </div>
+            <button type="submit" class="btn-primary">Consultar</button>
+        </form>
+
+        {% if saldo is defined %}
+            <p>Saldo da conta {{ conta_procurada }}: R$ {{ "%.2f"|format(saldo) }}</p>
+        {% endif %}
+
+        <a href="{{ url_for('index') }}" class="btn-secondary">Voltar ao menu</a>
+    </div>
+</body>
+</html>

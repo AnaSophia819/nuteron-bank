@@ -26,13 +26,20 @@ def relatorio_contas_por_agencia(contas):
 def relatorio_contas_multiplos_donos(contas):
     print("\n========== CONTAS COM MAIS DE UM DONO ==========")
 
-            
     for i in contas:
         if "Titulares extras" in i:
-            print(f"Conta: {i.get("Numero da conta")} | Agência: {i.get("Agencia")} | Saldo: R$ {i.get("Saldo", 0):.2f} | Quantidade de donos: {1 + len(i.get("Titulares extras", []))} | CPFs: {i.get("CPF")}, {', '.join([titular.get("cpf") for titular in i.get("Titulares extras", [])])}")
-
+            numero_conta = i.get("Numero da conta")
+            agencia = i.get("Agencia")
+            saldo = i.get("Saldo", 0)
+            titulares = i.get("Titulares extras", [])
+            cpfs = ", ".join(titular.get("cpf") for titular in titulares)
+            print(
+                f"Conta: {numero_conta} | Agência: {agencia} | "
+                f"Saldo: R$ {saldo:.2f} | Quantidade de donos: {1 + len(titulares)} | "
+                f"CPFs: {i.get('CPF')}, {cpfs}"
+            )
         else:
-            print(f"{i.get("Numero da conta")}: Não possui mais de um dono.")
+            print(f"{i.get('Numero da conta')}: Não possui mais de um dono.")
 
 
 # 4. Saldo por cliente
@@ -97,4 +104,3 @@ def listar_contas(contas):
         numero_conta = i.get("Numero da conta")
         saldo = i.get("Saldo", 0)
         print(f"Agência: {agencia} | Conta: {numero_conta} | Saldo: R$ {saldo:.2f}")
-    
