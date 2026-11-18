@@ -1,0 +1,20 @@
+[
+    {
+        "Conta": "1234",
+        "Agencia": "001",
+        "Saldo": 2000.0,
+        "CPF": "1234",
+        "Nome": "teste",
+        "Tipo": "corrente",
+        "TitularesExtras": []
+    },
+    {
+        "Conta": "12765432",
+        "Agencia": "001",
+        "Saldo": 100.0,
+        "CPF": "127653833",
+        "Nome": "teste",
+        "Tipo": "Salário",
+        "TitularesExtras": []
+    }
+]

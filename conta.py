@@ -1,36 +1,33 @@
-from json_comandos import salvar_lista # Importar do arquivo de comandos do json a função "salvar_lista"
-from cliente import cadastrar # Importar do arquivo "cliente" a função "cadastrar"
+from abc import ABC, abstractmethod
+from json_comandos import salvar_lista # Importar do arquivo de comandos do json a função "salvar_lista" 
+from cliente import Cliente # Importar do arquivo "cliente" a classe "Cliente"
 
-class Conta:
-    def __init__(self, numero, agencia, saldo, cpf, nome, tipo, titulares_extras=None):
+class Conta(ABC):
+    def __init__(self, numero, agencia, saldo, cpf, nome, tipo):
         self.numero = numero
         self.agencia = agencia
         self.saldo = float(saldo)
-        self.cpf = cpf
-        self.nome = nome
+        self.cliente = Cliente(nome, cpf) 
         self.tipo = tipo
-        self.titulares_extras = titulares_extras if titulares_extras is not None else []
+        self.titulares_extras = []
 
+    @property
+    def cpf(self):
+        return self.cliente.cpf
+
+    @property
+    def nome(self):
+        return self.cliente.nome
+
+
+    @abstractmethod
     def depositar(self, valor):
-        if self.tipo.lower() == "salario" or self.tipo.lower() == "salário":
-            return False, "Essa conta não aceita deposito"
+        pass
 
-        self.saldo += float(valor)
-        return True, "Depósito realizado com sucesso"
-
+    @abstractmethod
     def sacar(self, valor):
+        pass
 
-        if self.tipo.lower() == "poupanca" or self.tipo.lower() == "poupança":
-            return False, "Essa conta não permite saque."
-        elif self.saldo < float(valor):
-            return False, "Saldo insuficiente. Informe um valor menor"
-        else:
-            self.saldo -= float(valor)
-            return True, "Saque realizado com sucesso."
-
-    # Função para fazer conta conjunta
-    def adicionar_titular_extra(self, nome, cpf):
-        self.titulares_extras.append({"Nome":nome, "Cpf": cpf})
         
     # --- INTEGRAÇÃO COM JSON ---
     def to_dict(self):
@@ -39,23 +36,34 @@ class Conta:
             "Conta": self.numero,
             "Agencia": self.agencia,
             "Saldo": self.saldo,
-            "CPF": self.cpf,
-            "Nome": self.nome,
+            "CPF": self.cliente.cpf,
+            "Nome": self.cliente.nome,
             "Tipo": self.tipo,
-            "Titulares extras": self.titulares_extras
         }
     
     @classmethod
     def from_dict(cls, dados):
         """Cria um objeto Conta a partir de um dicionário (vindo do JSON)"""
-        return cls(
+        tipo = str(dados.get("Tipo", "")).strip().casefold()
+
+        classes = {
+            "corrente": ContaCorrente,
+            "salário": ContaSalario,
+            "salario": ContaSalario,
+            "poupança": ContaPoupanca,
+            "poupanca": ContaPoupanca,
+        }
+
+        if tipo not in classes:
+            raise ValueError(f"Tipo de conta inválido no JSON: {tipo!r}")
+
+        classe_conta = classes[tipo]
+        return classe_conta(
             numero=dados.get("Conta", dados.get("Numero da conta", "")),
             agencia=dados.get("Agencia", ""),
             saldo=dados.get("Saldo", 0.0),
             cpf=dados.get("CPF", dados.get("Cpf", "")),
             nome=dados.get("Nome", ""),
-            tipo=dados.get("Tipo", ""),
-            titulares_extras=dados.get("Titulares extras", [])
         )
 
 def buscar_conta(numero_procurado, lista_contas_obj):
@@ -64,3 +72,62 @@ def buscar_conta(numero_procurado, lista_contas_obj):
         if conta.numero == numero_procurado:
             return conta
     return None
+
+class ContaSalario(Conta):
+    def __init__(self, numero, agencia, saldo, cpf, nome):
+        super().__init__(numero, agencia, saldo, cpf, nome, tipo="Salário")  # Inicializa a lista de titulares extras como vazia
+
+    def depositar(self, valor):
+        return False, "Essa conta não aceita depósito"
+
+    def sacar(self, valor):
+        valor = float(valor)
+
+        if self.saldo < valor:
+            return False, "Saldo insuficiente. Informe um valor menor"
+        else:
+            self.saldo -= valor
+            return True, "Saque realizado com sucesso."
+
+class ContaPoupanca(Conta):
+    def __init__(self, numero, agencia, saldo, cpf, nome):
+        super().__init__(numero, agencia, saldo, cpf, nome, tipo="poupança") 
+        self.rendimento = 0.01 # Inicializa a lista de titulares extras como vazia
+
+    def depositar(self, valor):
+        valor = float(valor)
+        self.saldo += valor
+        return True, "Depósito realizado com sucesso"
+
+    def sacar(self, valor):
+        valor = float(valor)
+        
+        if self.saldo < valor:
+            return False, "Saldo insuficiente. Informe um valor menor"
+        else:
+            self.saldo -= float(valor)
+            return True, "Saque realizado com sucesso."
+
+    def calcular_rendimento(self):
+        """Calcula o rendimento da conta poupança"""
+        rendimento = self.saldo * self.rendimento
+        self.saldo += rendimento
+        return rendimento
+    
+class ContaCorrente(Conta):
+    def __init__(self, numero, agencia, saldo, cpf, nome):
+        super().__init__(numero, agencia, saldo, cpf, nome, tipo="corrente")
+
+    def depositar(self, valor):
+        valor = float(valor)
+        self.saldo += valor
+        return True, "Depósito realizado com sucesso."
+
+    def sacar(self, valor):
+        valor = float(valor)
+
+        if valor > self.saldo:
+            return False, "Saldo insuficiente."
+
+        self.saldo -= valor
+        return True, "Saque realizado com sucesso."

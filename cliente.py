@@ -1,14 +1,9 @@
-from procurar_cliente import cliente_existe
-from procurar_cliente import buscar_indice
-# Função para cadastrar clientes
-def cadastrar(contas):
-    cpf = input("Digite seu CPF:").strip()
+class Cliente():
+    def __init__(self, nome, cpf):
+        self.nome = nome
+        self.cpf = cpf
 
-    if not cliente_existe(contas, cpf):
-        nome = input("Digite seu nome:").strip()
-        print("Cliente cadastrado com sucesso!")
-    else:
-        nome = buscar_indice(contas, cpf)["Nome"]
-        print("Cliente já cadastrado!")
-
-    return cpf, nome
+    def cadastrar(self, nome, cpf):
+        """Cadastra um novo cliente"""
+        self.nome = nome
+        self.cpf = cpf

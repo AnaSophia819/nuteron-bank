@@ -1,5 +1,5 @@
-from procurar_cliente import cliente_existe
-from procurar_cliente import buscar_indice
+from imperativa.procurar_cliente import cliente_existe
+from imperativa.procurar_cliente import buscar_indice
 from cliente import cadastrar
 
 contas = [{"cpf": "123", "nome" : "Sophia"}]

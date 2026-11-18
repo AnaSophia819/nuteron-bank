@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, url_for, redirect
 from json_comandos import carregar_lista, salvar_lista
 from conta import Conta, buscar_conta
+from conta import ContaSalario, ContaPoupanca, ContaCorrente
 
 app = Flask(__name__)
 
@@ -31,10 +32,22 @@ def cadastrar():
         for c in contas_obj:
             if c.numero == numero_conta and c.agencia == agencia:
                 return render_template("cadastrar.html", mensagem="Já existe uma conta com esse número nesta agência.", nome=nome, cpf=cpf, conta=numero_conta, agencia=agencia, tipo=tipo, saldo=saldo), 400
+
+        tipo_normalizado = tipo.strip().casefold()
+
+        if tipo_normalizado == "salário" or tipo_normalizado == "salario":
+            nova_conta = ContaSalario(numero_conta, agencia, saldo_float, cpf, nome)
+        elif tipo_normalizado == "poupança" or tipo_normalizado == "poupanca":
+            nova_conta = ContaPoupanca(numero_conta, agencia, saldo_float, cpf, nome)
+        elif tipo_normalizado == "corrente":
+            nova_conta = ContaCorrente(numero_conta, agencia, saldo_float, cpf, nome)
+        else:
+            return render_template(
+                "cadastrar.html",
+                mensagem="Tipo inválido. Use Corrente, Poupança ou Salário."
+            ), 400
         
-        nova_conta = Conta(numero=numero_conta, agencia=agencia, saldo=saldo_float, cpf=cpf, nome=nome, tipo=tipo)
         contas_obj.append(nova_conta)
-        
         salvar_lista("contas.json", [c.to_dict() for c in contas_obj])
         return redirect(url_for("index"))
 
