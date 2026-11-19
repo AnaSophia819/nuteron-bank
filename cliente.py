@@ -1,9 +1,23 @@
-class Cliente():
-    def __init__(self, nome, cpf):
-        self.nome = nome
-        self.cpf = cpf
+from conta import ContaSalario, ContaPoupanca
 
-    def cadastrar(self, nome, cpf):
-        """Cadastra um novo cliente"""
+class Cliente():
+
+    # Construtor do cliente
+    def __init__(self, nome, cpf, telefone, email):
         self.nome = nome
         self.cpf = cpf
+        self.telefone = telefone
+        self.email = email
+        self.contas_cliente = []
+
+    # Atualizar cadastro do cliente
+    def atualizarcadastro(self, nome, cpf, telefone, email):
+        self.nome = nome
+        self.cpf = cpf
+        self.telefone = telefone
+        self.email = email
+
+    def adicionarconta(self, conta):
+        self.contas_cliente.append(conta)
+
+    

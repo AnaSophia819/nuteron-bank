@@ -3,6 +3,7 @@ from json_comandos import salvar_lista # Importar do arquivo de comandos do json
 from cliente import Cliente # Importar do arquivo "cliente" a classe "Cliente"
 
 class Conta(ABC):
+    
     def __init__(self, numero, agencia, saldo, cpf, nome, tipo):
         self.numero = numero
         self.agencia = agencia
